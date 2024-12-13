@@ -2,28 +2,24 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 20f;
-    public float lifetime = 5f;
+    public float destroyAfter = 5f; // Tiempo antes de destruir la bala si no impacta nada
 
     void Start()
     {
-        // Destruir la bala después de cierto tiempo
-        Destroy(gameObject, lifetime);
+        // Destruir la bala después de un tiempo para evitar que siga existiendo indefinidamente
+        Destroy(gameObject, destroyAfter);
     }
 
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        // Mover la bala hacia adelante
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        // Eliminar objetos que colisionen con la bala
-        if (other.CompareTag("Enemy") || other.CompareTag("Object"))
+        // Verificar si la bala impacta un objeto con la etiqueta "Enemy"
+        if (other.CompareTag("Enemy"))
         {
-            Destroy(other.gameObject); // Destruir el objeto
-            Destroy(gameObject);       // Destruir la bala
+            // Destruir al enemigo
+            Destroy(other.gameObject);
+
+            // Destruir la bala
+            Destroy(gameObject);
         }
     }
 }
