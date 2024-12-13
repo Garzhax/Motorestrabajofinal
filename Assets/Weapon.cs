@@ -1,26 +1,29 @@
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class Gun : MonoBehaviour
 {
-    public GameObject bulletPrefab; // Prefab de la bala
-    public Transform firePoint;    // Punto de disparo
-    public float fireRate = 0.5f;  // Cadencia de disparo
-    private float nextFireTime = 0f;
+    public GameObject bulletPrefab;   // Prefab de la bala
+    public Transform firePoint;       // Punto desde donde se dispara
+    public float bulletSpeed = 20f;   // Velocidad de la bala
 
     void Update()
     {
-        // Detectar disparo al presionar clic izquierdo
-        if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
+        if (Input.GetButtonDown("Fire1")) // Por defecto, "Fire1" es el clic izquierdo del ratón
         {
             Shoot();
-            nextFireTime = Time.time + fireRate;
         }
     }
 
     void Shoot()
     {
-        // Instanciar la bala en el punto de disparo
-        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        // Crear la bala en la posición del firePoint
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+
+        // Asegúrate de que la bala tiene un Rigidbody
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.AddForce(firePoint.forward * bulletSpeed, ForceMode.VelocityChange); // Empujar la bala hacia adelante
+        }
     }
 }
-
