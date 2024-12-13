@@ -2,18 +2,25 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 10f;//elocidad de movimiento
+    public float moveSpeed = 10f; // Velocidad de movimiento
+    private Rigidbody rb;         // Componente Rigidbody
 
-    private void Update()
+    private void Start()
+    {
+        // Obtener el componente Rigidbody del jugador
+        rb = GetComponent<Rigidbody>();
+    }
+
+    private void FixedUpdate()
     {
         // Obtener las entradas del jugador
-        float horizontal = Input.GetAxis("Horizontal"); // Movimiento en el eje X (A/D o flechas)
-        float vertical = Input.GetAxis("Vertical"); // Movimiento en el eje Z (W/S o flechas)
+        float horizontal = Input.GetAxis("Horizontal"); // Movimiento lateral (A/D o flechas)
+        float vertical = Input.GetAxis("Vertical");     // Movimiento hacia adelante/atrás (W/S o flechas)
 
-        // Crear un vector de movimiento basado en las entradas
+        // Crear un vector de movimiento (dirección)
         Vector3 moveDirection = transform.right * horizontal + transform.forward * vertical;
 
-        // Mover al jugador en la dirección calculada
-        transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
+        // Aplicar la fuerza de movimiento usando el Rigidbody
+        rb.velocity = new Vector3(moveDirection.x * moveSpeed, rb.velocity.y, moveDirection.z * moveSpeed);
     }
 }
