@@ -2,44 +2,55 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 10f; // Velocidad de movimiento
-    public float groundDistance = 0.2f; // Distancia para verificar si está tocando el suelo
-    private Rigidbody rb; // Componente Rigidbody
-    private bool isGrounded; // Para verificar si el personaje está tocando el suelo
-    public Transform groundCheck; // Para verificar si el personaje está tocando el suelo
+    public float moveSpeed = 5f; // Velocidad de movimiento
+    public float groundCheckDistance = 0.1f; // Distancia para comprobar si está tocando el suelo
+    public LayerMask groundLayer; // Capa del suelo
+    public float jumpForce = 7f; // Fuerza de salto (puedes ajustarlo)
 
-    private void Start()
+    private Rigidbody rb;
+    private bool isGrounded; // ¿Está tocando el suelo?
+
+    void Start()
     {
-        // Obtener el componente Rigidbody
         rb = GetComponent<Rigidbody>();
+    }
 
-        // Verificar si groundCheck está asignado
-        if (groundCheck == null)
+    void Update()
+    {
+        // Comprobación si el jugador está tocando el suelo
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundLayer);
+
+        // Obtener las entradas del jugador
+        float horizontal = Input.GetAxis("Horizontal"); // Movimiento en el eje X (A/D o flechas)
+        float vertical = Input.GetAxis("Vertical"); // Movimiento en el eje Z (W/S o flechas)
+
+        // Crear un vector de movimiento basado en las entradas
+        Vector3 moveDirection = (transform.right * horizontal + transform.forward * vertical).normalized;
+
+        // Aplicar movimiento
+        MovePlayer(moveDirection);
+
+        // Salto (si el jugador está en el suelo)
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            Debug.LogError("GroundCheck no está asignado. Por favor, asigna un Transform en el Inspector.");
+            Jump();
         }
     }
 
-    private void FixedUpdate()
+    private void MovePlayer(Vector3 direction)
     {
-        // Verificar si el personaje está tocando el suelo solo si groundCheck no es null
-        if (groundCheck != null)
+        // Mover el jugador con Rigidbody
+        Vector3 targetVelocity = direction * moveSpeed;
+        targetVelocity.y = rb.velocity.y; // Mantener la velocidad vertical (para gravedad)
+        rb.velocity = targetVelocity;
+    }
+
+    private void Jump()
+    {
+        // Aplicar fuerza de salto si está tocando el suelo
+        if (isGrounded)
         {
-            isGrounded = Physics.Raycast(groundCheck.position, Vector3.down, groundDistance);
-        }
-
-        // Obtener las entradas del jugador
-        float horizontal = Input.GetAxis("Horizontal"); // Movimiento lateral (A/D o flechas)
-        float vertical = Input.GetAxis("Vertical");     // Movimiento hacia adelante/atrás (W/S o flechas)
-
-        // Crear un vector de movimiento (dirección)
-        Vector3 moveDirection = transform.right * horizontal + transform.forward * vertical;
-
-        // Mover al jugador solo en los ejes X y Z, manteniendo la componente Y para la gravedad
-        if (isGrounded) // Solo mover si el personaje está tocando el suelo
-        {
-            Vector3 targetVelocity = new Vector3(moveDirection.x * moveSpeed, rb.velocity.y, moveDirection.z * moveSpeed);
-            rb.velocity = targetVelocity;
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 }
