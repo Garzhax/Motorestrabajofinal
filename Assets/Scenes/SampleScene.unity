@@ -573,7 +573,7 @@ GameObject:
   - component: {fileID: 1504146262}
   m_Layer: 0
   m_Name: FirePoint
-  m_TagString: Untagged
+  m_TagString: FirePoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -733,7 +733,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bullet
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8372501614236370158, guid: 42b5261ff2a1d514d8ce7f95573aad88, type: 3}
+      propertyPath: m_TagString
+      value: Bullet
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -4782676915917795518, guid: 42b5261ff2a1d514d8ce7f95573aad88, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -3707,7 +3712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44216b272a22ca4e93107956a528357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 10
 --- !u!4 &8819399280898589507
 Transform:
   m_ObjectHideFlags: 0
